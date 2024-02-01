@@ -81,6 +81,7 @@ const parejaEncontrada = (
   tablero.cartas[indiceB - 1].encontrada = true;
   tablero.estadoPartida = "CeroCartasLevantadas";
   vaciarIndiceCartasTablero(tablero);
+  mandarMensajeAJugador('¡Muy bien! ¡Pareja encontrada!')
 };
 
 const parejaNoEncontrada = (
