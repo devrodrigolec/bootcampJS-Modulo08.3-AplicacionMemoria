@@ -1,11 +1,5 @@
 import _ from "underscore";
 import { Carta, Tablero, tablero } from "./model";
-import {
-  mandarMensajeAJugador,
-  mostrarImagenDeCarta,
-  mostrarIntentos,
-  ocultarImageCarta,
-} from "./ui";
 
 export const aumentarNumeroIntentos = () => {
   tablero.numeroIntentos++;
@@ -37,13 +31,8 @@ export const sePuedeVoltearCarta = (
   return !estaVolteada && !encontrada ? true : false;
 };
 
-export const voltearCarta = (
-  cartaDiv: HTMLDivElement,
-  tablero: Tablero,
-  indice: number
-): void => {
+export const voltearCarta = (tablero: Tablero, indice: number): void => {
   tablero.cartas[indice - 1].estaVuelta = true;
-  mostrarImagenDeCarta(cartaDiv, tablero, indice);
 };
 
 export const asignarIndiceCartasVolteadasAlTablero = (
@@ -80,7 +69,6 @@ const parejaEncontrada = (
   tablero.cartas[indiceB - 1].encontrada = true;
   tablero.estadoPartida = "CeroCartasLevantadas";
   vaciarIndiceCartasTablero(tablero);
-  mandarMensajeAJugador("¡Muy bien! ¡Pareja encontrada!");
 };
 
 const parejaNoEncontrada = (
@@ -88,49 +76,36 @@ const parejaNoEncontrada = (
   indiceA: number,
   indiceB: number
 ) => {
-  vaciarIndiceCartasTablero(tablero);
   tablero.estadoPartida = "CeroCartasLevantadas";
   tablero.cartas[indiceA - 1].estaVuelta = false;
   tablero.cartas[indiceB - 1].estaVuelta = false;
-  setTimeout(() => {
-    ocultarImageCarta(indiceA);
-    ocultarImageCarta(indiceB);
-  }, 1000);
 };
 
 export const sonPareja = (
   tablero: Tablero,
   indiceA: number,
   indiceB: number
-): void => {
+): boolean => {
   const idFotoCartaA = tablero.cartas[indiceA - 1].idFoto;
   const idFotoCartaB = tablero.cartas[indiceB - 1].idFoto;
 
   if (idFotoCartaA === idFotoCartaB) {
     parejaEncontrada(tablero, indiceA, indiceB);
+    return true;
   } else {
     parejaNoEncontrada(tablero, indiceA, indiceB);
+    return false;
   }
 };
 
 export const esPartidaCompleta = (tablero: Tablero) =>
   tablero.cartas.every((carta) => carta.encontrada);
 
-export const gestionarPartidaCompleta = (tablero : Tablero) => {
+export const gestionarPartidaCompleta = (tablero: Tablero) => {
   tablero.estadoPartida = "PartidaCompleta";
-  mandarMensajeAJugador("¡Enhorabuena! ¡has ganado!");
 };
 
 export const reiniciarPartida = (tablero: Tablero): void => {
-  mandarMensajeAJugador("¡Aquí vamos de nuevo!");
-  for (let indice = 0; indice <= 12; indice++) {
-    const cartaDiv = document.getElementById(`carta-${indice}`);
-
-    if (cartaDiv && cartaDiv instanceof HTMLDivElement) {
-      ocultarImageCarta(indice);
-    }
-  }
-
   tablero.cartas.forEach((carta) => {
     carta.encontrada = false;
     carta.estaVuelta = false;
@@ -138,5 +113,4 @@ export const reiniciarPartida = (tablero: Tablero): void => {
   tablero.estadoPartida = "CeroCartasLevantadas";
   tablero.numeroIntentos = 0;
   vaciarIndiceCartasTablero(tablero);
-  mostrarIntentos(tablero.numeroIntentos);
 };

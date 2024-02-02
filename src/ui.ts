@@ -5,9 +5,12 @@ import {
   esPartidaCompleta,
   gestionarEstadoPartida,
   gestionarPartidaCompleta,
+  iniciarPartida,
   obtenerIndiceDiv,
+  reiniciarPartida,
   sePuedeVoltearCarta,
   sonPareja,
+  vaciarIndiceCartasTablero,
   voltearCarta,
 } from "./motor";
 
@@ -91,6 +94,74 @@ export const gestionarEstadoBoton = (
   }
 };
 
+const gestionarSonPareja = (resultadoSonPareja: boolean, tablero: Tablero) => {
+  if (resultadoSonPareja) {
+    mandarMensajeAJugador("¡Muy bien! ¡Pareja encontrada!");
+  } else {
+    const indiceA = tablero.indiceCartaVolteadaA;
+    const indiceB = tablero.indiceCartaVolteadaB;
+
+    vaciarIndiceCartasTablero(tablero);
+    setTimeout(() => {
+      if (indiceA && indiceB) {
+        ocultarImageCarta(indiceA);
+        ocultarImageCarta(indiceB);
+      }
+    }, 1000);
+  }
+};
+
+export const gestionarIniciarPartida = (tablero: Tablero): void => {
+  const iniciarPartidaBoton = document.getElementById("iniciar-partida-boton");
+  const reiniciarPartidaBoton = document.getElementById(
+    "reiniciar-partida-boton"
+  );
+
+  tablero.estadoPartida = "PartidaNoIniciada";
+  mostrarIntentos(tablero.numeroIntentos);
+
+  if (iniciarPartidaBoton && iniciarPartidaBoton instanceof HTMLButtonElement) {
+    iniciarPartidaBoton.addEventListener("click", () => {
+      if (tablero.estadoPartida === "PartidaNoIniciada") {
+        iniciarPartida(tablero);
+        gestionarEstadoBoton(iniciarPartidaBoton, "DESACTIVAR");
+        mandarMensajeAJugador("¡Buena suerte!");
+        gestionarJuego(tablero);
+        if (
+          reiniciarPartidaBoton &&
+          reiniciarPartidaBoton instanceof HTMLButtonElement
+        ) {
+          gestionarEstadoBoton(reiniciarPartidaBoton, "ACTIVAR");
+        }
+      }
+    });
+  }
+};
+
+export const gestionarReiniciarPartida = (tablero: Tablero): void => {
+  const reiniciarPartidaBoton = document.getElementById(
+    "reiniciar-partida-boton"
+  );
+  if (
+    reiniciarPartidaBoton &&
+    reiniciarPartidaBoton instanceof HTMLButtonElement
+  ) {
+    gestionarEstadoBoton(reiniciarPartidaBoton, "DESACTIVAR");
+    reiniciarPartidaBoton.addEventListener("click", () => {
+      reiniciarPartida(tablero);
+      mostrarIntentos(tablero.numeroIntentos);
+      mandarMensajeAJugador("¡Aquí vamos de nuevo!");
+      for (let indice = 0; indice <= 12; indice++) {
+        const cartaDiv = document.getElementById(`carta-${indice}`);
+
+        if (cartaDiv && cartaDiv instanceof HTMLDivElement) {
+          ocultarImageCarta(indice);
+        }
+      }
+    });
+  }
+};
+
 export const gestionarJuego = (tablero: Tablero) => {
   if (tablero.estadoPartida !== "PartidaNoIniciada") {
     for (let indiceDiv = 1; indiceDiv <= 12; indiceDiv++) {
@@ -105,7 +176,8 @@ export const gestionarJuego = (tablero: Tablero) => {
           );
 
           if (sePuedeVoltearCartaDelJuego) {
-            voltearCarta(cartaDelJuego, tablero, indiceCartaDiv);
+            voltearCarta(tablero, indiceCartaDiv);
+            mostrarImagenDeCarta(cartaDelJuego, tablero, indiceCartaDiv);
             asignarIndiceCartasVolteadasAlTablero(tablero, indiceCartaDiv);
             gestionarEstadoPartida(tablero);
           }
@@ -122,14 +194,17 @@ export const gestionarJuego = (tablero: Tablero) => {
           ) {
             aumentarNumeroIntentos();
             mostrarIntentos(tablero.numeroIntentos);
-            sonPareja(
+            const resultadoSonPareja = sonPareja(
               tablero,
               tablero.indiceCartaVolteadaA,
               tablero.indiceCartaVolteadaB
             );
+
+            gestionarSonPareja(resultadoSonPareja, tablero);
           }
-          if(esPartidaCompleta(tablero)) {
-            gestionarPartidaCompleta(tablero)
+          if (esPartidaCompleta(tablero)) {
+            gestionarPartidaCompleta(tablero);
+            mandarMensajeAJugador("¡Enhorabuena! ¡has ganado!");
           }
         });
       }
