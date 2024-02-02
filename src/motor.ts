@@ -20,7 +20,6 @@ export const iniciarPartida = (tablero: Tablero): void => {
   const cartasBarajadas = barajarCartas(tablero.cartas);
   tablero.cartas = [...cartasBarajadas];
   tablero.estadoPartida = "CeroCartasLevantadas";
- 
 };
 
 export const obtenerIndiceDiv = (cartaDiv: HTMLDivElement): number => {
@@ -58,7 +57,7 @@ export const asignarIndiceCartasVolteadasAlTablero = (
   }
 };
 
-const vaciarIndiceCartasTablero = (tablero: Tablero) => {
+export const vaciarIndiceCartasTablero = (tablero: Tablero) => {
   tablero.indiceCartaVolteadaA = undefined;
   tablero.indiceCartaVolteadaB = undefined;
 };
@@ -76,12 +75,12 @@ const parejaEncontrada = (
   tablero: Tablero,
   indiceA: number,
   indiceB: number
-) => {
+): void => {
   tablero.cartas[indiceA - 1].encontrada = true;
   tablero.cartas[indiceB - 1].encontrada = true;
   tablero.estadoPartida = "CeroCartasLevantadas";
   vaciarIndiceCartasTablero(tablero);
-  mandarMensajeAJugador('¡Muy bien! ¡Pareja encontrada!')
+  mandarMensajeAJugador("¡Muy bien! ¡Pareja encontrada!");
 };
 
 const parejaNoEncontrada = (
@@ -114,14 +113,12 @@ export const sonPareja = (
   }
 };
 
-export const esPartidaCompleta = (tablero: Tablero) => {
-  if (tablero.cartas.every((carta) => carta.encontrada)) {
-    tablero.estadoPartida = "PartidaCompleta";
-    mandarMensajeAJugador("¡Enhorabuena! ¡has ganado!");
-    return true;
-  } else {
-    return false;
-  }
+export const esPartidaCompleta = (tablero: Tablero) =>
+  tablero.cartas.every((carta) => carta.encontrada);
+
+export const gestionarPartidaCompleta = (tablero : Tablero) => {
+  tablero.estadoPartida = "PartidaCompleta";
+  mandarMensajeAJugador("¡Enhorabuena! ¡has ganado!");
 };
 
 export const reiniciarPartida = (tablero: Tablero): void => {
@@ -138,7 +135,7 @@ export const reiniciarPartida = (tablero: Tablero): void => {
     carta.encontrada = false;
     carta.estaVuelta = false;
   });
-  tablero.estadoPartida = 'CeroCartasLevantadas';
+  tablero.estadoPartida = "CeroCartasLevantadas";
   tablero.numeroIntentos = 0;
   vaciarIndiceCartasTablero(tablero);
   mostrarIntentos(tablero.numeroIntentos);

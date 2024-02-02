@@ -4,6 +4,7 @@ import {
   aumentarNumeroIntentos,
   esPartidaCompleta,
   gestionarEstadoPartida,
+  gestionarPartidaCompleta,
   obtenerIndiceDiv,
   sePuedeVoltearCarta,
   sonPareja,
@@ -19,25 +20,26 @@ export const mostrarIntentos = (numeroIntentos: number) => {
 };
 
 const gestionarMensajesJugadorPorIntentos = (numeroIntentos: number): void => {
+  let mensaje: string = "";
   switch (numeroIntentos) {
     case 5:
-      mandarMensajeAJugador("No está fácil, ¿verdad? ");
+      mensaje = "No está fácil, ¿verdad? ";
       break;
     case 10:
-      mandarMensajeAJugador("Mmmm... ¿seguro quieres seguir?");
+      mensaje = "Mmmm... ¿seguro quieres seguir?";
       break;
     case 15:
-      mandarMensajeAJugador("Te estás tardandooo...");
+      mensaje = "Te estás tardandooo...";
       break;
     case 20:
-      mandarMensajeAJugador("Un niño tardaría menos...");
+      mensaje = "Un niño tardaría menos...";
       break;
     case 25:
-      mandarMensajeAJugador("Creo que no diré nada más...");
+      mensaje = "Creo que no diré nada más...";
       break;
-    default:
-      mandarMensajeAJugador("Este mensaje no debe aparecer");
-      break;
+  }
+  if (mensaje !== "") {
+    mandarMensajeAJugador(mensaje);
   }
 };
 
@@ -126,7 +128,9 @@ export const gestionarJuego = (tablero: Tablero) => {
               tablero.indiceCartaVolteadaB
             );
           }
-          esPartidaCompleta(tablero);
+          if(esPartidaCompleta(tablero)) {
+            gestionarPartidaCompleta(tablero)
+          }
         });
       }
     }
