@@ -37,10 +37,10 @@ export const mostrarImagenDeCarta = (
   tablero: Tablero,
   indice: number
 ) => {
-  cartaDiv.classList.remove("slit-in-vertical", "carta-cerrada");
+  cartaDiv.classList.remove("slit-in-vertical", "contenedor__carta-cerrada");
 
   setTimeout(() => {
-    cartaDiv.classList.add("carta-abierta", "slit-in-vertical");
+    cartaDiv.classList.add("contenedor__carta-abierta", "slit-in-vertical");
 
     const imgCarta = document.getElementById(`imgCarta-${indice}`);
     if (imgCarta && imgCarta instanceof HTMLImageElement) {
@@ -53,8 +53,8 @@ export const ocultarImageCarta = (indice: number): void => {
   const cartaDiv = document.getElementById(`carta-${indice}`);
   const imgCarta = document.getElementById(`imgCarta-${indice}`);
   if (cartaDiv && cartaDiv instanceof HTMLDivElement) {
-    cartaDiv.classList.remove("carta-abierta", "slit-in-vertical");
-    cartaDiv.classList.add("carta-cerrada");
+    cartaDiv.classList.remove("contenedor__carta-abierta", "slit-in-vertical");
+    cartaDiv.classList.add("contenedor__carta-cerrada");
     setTimeout(() => {
       cartaDiv.classList.add("slit-in-vertical");
       if (imgCarta && imgCarta instanceof HTMLImageElement) {
