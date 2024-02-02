@@ -88,3 +88,5 @@ const crearTableroInicial = (): Tablero => ({
 });
 
 export let tablero: Tablero = crearTableroInicial();
+
+export type EstadoBoton = 'ACTIVAR' | 'DESACTIVAR';

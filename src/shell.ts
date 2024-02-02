@@ -1,6 +1,6 @@
 import { iniciarPartida, reiniciarPartida } from "./motor";
 import { tablero } from "./model";
-import { gestionarJuego, mandarMensajeAJugador, mostrarIntentos } from "./ui";
+import { gestionarEstadoBoton, gestionarJuego, mandarMensajeAJugador, mostrarIntentos } from "./ui";
 
 document.addEventListener("DOMContentLoaded", () => {
   const iniciarPartidaBoton = document.getElementById("iniciar-partida-boton");
@@ -15,14 +15,14 @@ document.addEventListener("DOMContentLoaded", () => {
     iniciarPartidaBoton.addEventListener("click", () => {
       if (tablero.estadoPartida === "PartidaNoIniciada") {
         iniciarPartida(tablero);
-        iniciarPartidaBoton.disabled = true;
+        gestionarEstadoBoton(iniciarPartidaBoton, 'DESACTIVAR')
         mandarMensajeAJugador("¡Buena suerte!");
         gestionarJuego(tablero);
         if (
           reiniciarPartidaBoton &&
           reiniciarPartidaBoton instanceof HTMLButtonElement
         ) {
-          reiniciarPartidaBoton.disabled = false;
+          gestionarEstadoBoton(reiniciarPartidaBoton, 'ACTIVAR');
         }
       }
     });
@@ -31,15 +31,9 @@ document.addEventListener("DOMContentLoaded", () => {
     reiniciarPartidaBoton &&
     reiniciarPartidaBoton instanceof HTMLButtonElement
   ) {
-    reiniciarPartidaBoton.disabled = true;
+    gestionarEstadoBoton(reiniciarPartidaBoton, 'DESACTIVAR');
     reiniciarPartidaBoton.addEventListener("click", () => {
-      reiniciarPartida(tablero);
-      if (
-        iniciarPartidaBoton &&
-        iniciarPartidaBoton instanceof HTMLButtonElement
-      ) {
-        iniciarPartidaBoton.disabled = true;
-      }
+      reiniciarPartida(tablero);      
     });
   }
 });

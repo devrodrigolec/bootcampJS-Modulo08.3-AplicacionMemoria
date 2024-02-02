@@ -1,4 +1,4 @@
-import { Tablero } from "./model";
+import { EstadoBoton, Tablero } from "./model";
 import {
   asignarIndiceCartasVolteadasAlTablero,
   aumentarNumeroIntentos,
@@ -15,20 +15,29 @@ export const mostrarIntentos = (numeroIntentos: number) => {
   if (intentosDiv && intentosDiv instanceof HTMLDivElement) {
     intentosDiv.innerHTML = `Intentos: ${numeroIntentos}`;
   }
-  if (numeroIntentos > 4) {
-    mandarMensajeAJugador("No está fácil, ¿verdad? ");
-  }
-  if (numeroIntentos > 9) {
-    mandarMensajeAJugador("Mmmm... ¿seguro quieres seguir?");
-  }
-  if (numeroIntentos > 14) {
-    mandarMensajeAJugador("Te estás tardandooo...");
-  }
-  if (numeroIntentos > 19) {
-    mandarMensajeAJugador("Un niño tardaría menos...");
-  }
-  if (numeroIntentos > 25) {
-    mandarMensajeAJugador("Creo que no diré nada más...");
+  gestionarMensajesJugadorPorIntentos(numeroIntentos);
+};
+
+const gestionarMensajesJugadorPorIntentos = (numeroIntentos: number): void => {
+  switch (numeroIntentos) {
+    case 5:
+      mandarMensajeAJugador("No está fácil, ¿verdad? ");
+      break;
+    case 10:
+      mandarMensajeAJugador("Mmmm... ¿seguro quieres seguir?");
+      break;
+    case 15:
+      mandarMensajeAJugador("Te estás tardandooo...");
+      break;
+    case 20:
+      mandarMensajeAJugador("Un niño tardaría menos...");
+      break;
+    case 25:
+      mandarMensajeAJugador("Creo que no diré nada más...");
+      break;
+    default:
+      mandarMensajeAJugador("Este mensaje no debe aparecer");
+      break;
   }
 };
 
@@ -38,10 +47,8 @@ export const mostrarImagenDeCarta = (
   indice: number
 ) => {
   cartaDiv.classList.remove("slit-in-vertical", "contenedor__carta-cerrada");
-
   setTimeout(() => {
     cartaDiv.classList.add("contenedor__carta-abierta", "slit-in-vertical");
-
     const imgCarta = document.getElementById(`imgCarta-${indice}`);
     if (imgCarta && imgCarta instanceof HTMLImageElement) {
       imgCarta.src = tablero.cartas[indice - 1].imagen;
@@ -68,6 +75,17 @@ export const mandarMensajeAJugador = (texto: string): void => {
   const mensajeJugadorDiv = document.getElementById("mensajeJugador");
   if (mensajeJugadorDiv && mensajeJugadorDiv instanceof HTMLDivElement) {
     mensajeJugadorDiv.textContent = texto;
+  }
+};
+
+export const gestionarEstadoBoton = (
+  boton: HTMLButtonElement,
+  estado: EstadoBoton
+): void => {
+  if (estado === "ACTIVAR") {
+    boton.disabled = false;
+  } else {
+    boton.disabled = true;
   }
 };
 
@@ -108,7 +126,6 @@ export const gestionarJuego = (tablero: Tablero) => {
               tablero.indiceCartaVolteadaB
             );
           }
-
           esPartidaCompleta(tablero);
         });
       }

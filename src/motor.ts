@@ -20,7 +20,7 @@ export const iniciarPartida = (tablero: Tablero): void => {
   const cartasBarajadas = barajarCartas(tablero.cartas);
   tablero.cartas = [...cartasBarajadas];
   tablero.estadoPartida = "CeroCartasLevantadas";
-  console.log(tablero.cartas);
+ 
 };
 
 export const obtenerIndiceDiv = (cartaDiv: HTMLDivElement): number => {
@@ -138,9 +138,8 @@ export const reiniciarPartida = (tablero: Tablero): void => {
     carta.encontrada = false;
     carta.estaVuelta = false;
   });
-  tablero.estadoPartida = "PartidaNoIniciada";
+  tablero.estadoPartida = 'CeroCartasLevantadas';
   tablero.numeroIntentos = 0;
-  tablero.indiceCartaVolteadaA = undefined;
-  tablero.indiceCartaVolteadaB = undefined;
+  vaciarIndiceCartasTablero(tablero);
   mostrarIntentos(tablero.numeroIntentos);
 };
