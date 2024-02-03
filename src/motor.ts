@@ -12,7 +12,7 @@ export const barajarCartas = (cartas: Carta[]): Carta[] => {
 
 export const iniciarPartida = (tablero: Tablero): void => {
   const cartasBarajadas = barajarCartas(tablero.cartas);
-  tablero.cartas = [...cartasBarajadas];
+  tablero.cartas = structuredClone(cartasBarajadas);
   tablero.estadoPartida = "CeroCartasLevantadas";
 };
 
@@ -111,7 +111,7 @@ export const reiniciarPartida = (tablero: Tablero): void => {
     carta.estaVuelta = false;
   });
   const cartasBarajadas = barajarCartas(tablero.cartas);
-  tablero.cartas = cartasBarajadas;
+  tablero.cartas = structuredClone(cartasBarajadas);
   tablero.estadoPartida = "CeroCartasLevantadas";
   tablero.numeroIntentos = 0;
   vaciarIndiceCartasTablero(tablero);
