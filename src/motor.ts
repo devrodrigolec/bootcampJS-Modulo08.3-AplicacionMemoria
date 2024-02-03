@@ -110,6 +110,8 @@ export const reiniciarPartida = (tablero: Tablero): void => {
     carta.encontrada = false;
     carta.estaVuelta = false;
   });
+  const cartasBarajadas = barajarCartas(tablero.cartas);
+  tablero.cartas = cartasBarajadas;
   tablero.estadoPartida = "CeroCartasLevantadas";
   tablero.numeroIntentos = 0;
   vaciarIndiceCartasTablero(tablero);

@@ -70,11 +70,13 @@ const crearColeccionDeCartasInicial = (infoCartas: InfoCarta[]): Carta[] => {
   let coleccionCartasInicial = infoCartas.map((infocarta) => {
     return crearCartaInicial(infocarta.idFoto, infocarta.imagen);
   });
+  
 
   coleccionCartasInicial = [
     ...structuredClone(coleccionCartasInicial),
     ...structuredClone(coleccionCartasInicial),
   ];
+
 
   return coleccionCartasInicial;
 };
