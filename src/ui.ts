@@ -87,11 +87,7 @@ export const gestionarEstadoBoton = (
   boton: HTMLButtonElement,
   estado: EstadoBoton
 ): void => {
-  if (estado === "ACTIVAR") {
-    boton.disabled = false;
-  } else {
-    boton.disabled = true;
-  }
+  boton.disabled = estado === "ACTIVAR" ? false : true;
 };
 
 const gestionarSonPareja = (resultadoSonPareja: boolean, tablero: Tablero) => {
@@ -162,6 +158,35 @@ export const gestionarReiniciarPartida = (tablero: Tablero): void => {
   }
 };
 
+const comprobarSegundaCartaLevantada = (tablero: Tablero): void => {
+  if (
+    tablero.estadoPartida === "DosCartasLevantadas" &&
+    tablero.indiceCartaVolteadaA &&
+    tablero.indiceCartaVolteadaB
+  ) {
+    aumentarNumeroIntentos();
+    mostrarIntentos(tablero.numeroIntentos);
+    const resultadoSonPareja = sonPareja(
+      tablero,
+      tablero.indiceCartaVolteadaA,
+      tablero.indiceCartaVolteadaB
+    );
+
+    gestionarSonPareja(resultadoSonPareja, tablero);
+  }
+};
+
+const gestionarVoltearCarta = (
+  tablero: Tablero,
+  indiceCartaDiv: number,
+  cartaDelJuego: HTMLDivElement
+) => {
+  voltearCarta(tablero, indiceCartaDiv);
+  mostrarImagenDeCarta(cartaDelJuego, tablero, indiceCartaDiv);
+  asignarIndiceCartasVolteadasAlTablero(tablero, indiceCartaDiv);
+  gestionarEstadoPartida(tablero);
+};
+
 export const gestionarJuego = (tablero: Tablero) => {
   if (tablero.estadoPartida !== "PartidaNoIniciada") {
     for (let indiceDiv = 1; indiceDiv <= 12; indiceDiv++) {
@@ -175,33 +200,14 @@ export const gestionarJuego = (tablero: Tablero) => {
             indiceCartaDiv
           );
 
-          if (sePuedeVoltearCartaDelJuego) {
-            voltearCarta(tablero, indiceCartaDiv);
-            mostrarImagenDeCarta(cartaDelJuego, tablero, indiceCartaDiv);
-            asignarIndiceCartasVolteadasAlTablero(tablero, indiceCartaDiv);
-            gestionarEstadoPartida(tablero);
-          }
-          if (!sePuedeVoltearCartaDelJuego) {
-            mandarMensajeAJugador(
-              "¡Presta más atención! ¡Esa carta ya la has volteado!"
-            );
-          }
+          sePuedeVoltearCartaDelJuego
+            ? gestionarVoltearCarta(tablero, indiceCartaDiv, cartaDelJuego)
+            : mandarMensajeAJugador(
+                "¡Presta más atención! ¡Esa carta ya la has volteado!"
+              );
 
-          if (
-            tablero.estadoPartida === "DosCartasLevantadas" &&
-            tablero.indiceCartaVolteadaA &&
-            tablero.indiceCartaVolteadaB
-          ) {
-            aumentarNumeroIntentos();
-            mostrarIntentos(tablero.numeroIntentos);
-            const resultadoSonPareja = sonPareja(
-              tablero,
-              tablero.indiceCartaVolteadaA,
-              tablero.indiceCartaVolteadaB
-            );
+          comprobarSegundaCartaLevantada(tablero);
 
-            gestionarSonPareja(resultadoSonPareja, tablero);
-          }
           if (esPartidaCompleta(tablero)) {
             gestionarPartidaCompleta(tablero);
             mandarMensajeAJugador("¡Enhorabuena! ¡has ganado!");
